@@ -62,6 +62,19 @@ Below you’ll find step-by-step instructions—in English y español—para gen
 
    > “Hi username! You’ve successfully authenticated…”
 
+🔐 6.1 Use a SAML-authorized Personal Access Token (HTTPS)
+
+    Go to GitHub → Settings → Developer settings → Personal access tokens
+
+    Click Generate new token, give it at least repo scope, and authorize it for SET-Apps when prompted
+
+    Clone via HTTPS, supplying your token as the password:
+
+    git clone https://github.com/SET-Apps/vsc-process-testing..git vsc-process-testing
+    Username: your-github-username
+    Password: <your-PAT>
+
+Either approach will satisfy the org’s SAML requirement and get you cloning in no time. 🚀
 7. **Initialize & connect your repo**
 
    ```bash
