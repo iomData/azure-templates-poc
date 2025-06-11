@@ -1,167 +1,122 @@
-**Let’s unlock Git with SSH keys! 🗝️**
-Below you’ll find step-by-step instructions—in English y español—para generar tu par de llaves SSH, agregarla al agente y configurar un repositorio Git por SSH.
+**Let’s Supercharge Your Git SSH Setup! 🚀**
+
+Paste this into your OneNote for quick reference.
 
 ---
 
-## 🔐 English: Configure SSH Key & Initialize Git
+## 1. Prerequisites
 
-1. **Check for existing SSH keys**
-
-   ```bash
-   ls ~/.ssh/id_*.pub
-   ```
-
-   If you see files like `id_rsa.pub` or `id_ed25519.pub`, you’ve already got keys; you can skip to step 3 (or back them up and regenerate).
-
-2. **Generate a new SSH key**
-   Use Ed25519 (more secure & faster):
-
-   ```bash
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
-
-   * When prompted, accept the default file location (`~/.ssh/id_ed25519`).
-   * Enter a passphrase (highly recommended) or leave empty for no passphrase (less secure).
-
-3. **Start the ssh-agent & add your key**
-
-   ```bash
-   eval "$(ssh-agent -s)"
-   ssh-add ~/.ssh/id_ed25519
-   ```
-
-   This “agent” remembers your unlocked key so you don’t type your passphrase every time.
-
-4. **Copy your public key to the clipboard**
-
-   * **macOS / Linux**:
-
-     ```bash
-     cat ~/.ssh/id_ed25519.pub | pbcopy     # macOS
-     cat ~/.ssh/id_ed25519.pub | xclip -sel clip  # Linux with xclip
-     ```
-   * **Windows (Git Bash)**:
-
-     ```bash
-     cat ~/.ssh/id_ed25519.pub | clip
-     ```
-
-5. **Add the key to your Git host**
-
-   * **GitHub**: Settings → SSH and GPG keys → New SSH key → paste → Save.
-   * **GitLab**: User Settings → SSH Keys → Add key → paste → Add key.
-   * **Bitbucket**: Personal Settings → SSH Keys → Add key → paste → Add key.
-
-6. **Test the connection**
-
-   ```bash
-   ssh -T git@github.com
-   ```
-
-   You should see:
-
-   > “Hi username! You’ve successfully authenticated…”
-
-🔐 6.1 Use a SAML-authorized Personal Access Token (HTTPS)
-
-    Go to GitHub → Settings → Developer settings → Personal access tokens
-
-    Click Generate new token, give it at least repo scope, and authorize it for SET-Apps when prompted
-
-    Clone via HTTPS, supplying your token as the password:
-
-    git clone https://github.com/SET-Apps/vsc-process-testing..git vsc-process-testing
-    Username: your-github-username
-    Password: <your-PAT>
-
-Either approach will satisfy the org’s SAML requirement and get you cloning in no time. 🚀
-7. **Initialize & connect your repo**
-
-   ```bash
-   mkdir my-project && cd my-project
-   git init
-   git remote add origin git@github.com:username/my-project.git
-   git add .
-   git commit -m "Initial commit"
-   git push -u origin main
-   ```
-
-   Voilà! Your repo is live over SSH—no passwords, just pure key magic.
+* Ensure you have Git installed.
+* Open your terminal (macOS/Linux) or Git Bash (Windows).
 
 ---
 
-## 🔐 Español: Configurar llave SSH e iniciar Git
+## 2. Check for Existing SSH Keys
 
-1. **Verifica si ya tienes llaves SSH**
+```bash
+ls ~/.ssh/id_*.pub
+```
 
-   ```bash
-   ls ~/.ssh/id_*.pub
-   ```
-
-   Si aparecen `id_rsa.pub` o `id_ed25519.pub`, ya tienes llaves; puedes ir al paso 3 (o respaldarlas y regenerar).
-
-2. **Genera una nueva llave SSH**
-   Con Ed25519 (más segura y rápida):
-
-   ```bash
-   ssh-keygen -t ed25519 -C "tu_email@ejemplo.com"
-   ```
-
-   * Al pedir ruta, acepta la ubicación por defecto (`~/.ssh/id_ed25519`).
-   * Ingresa una frase de paso (recomendado) o déjalo vacío para no usar frase (menos seguro).
-
-3. **Inicia el ssh-agent y agrega tu llave**
-
-   ```bash
-   eval "$(ssh-agent -s)"
-   ssh-add ~/.ssh/id_ed25519
-   ```
-
-   El agente “recuerda” tu llave desbloqueada para no pedirte frase cada vez.
-
-4. **Copia tu llave pública al portapapeles**
-
-   * **macOS / Linux**:
-
-     ```bash
-     cat ~/.ssh/id_ed25519.pub | pbcopy     # macOS
-     cat ~/.ssh/id_ed25519.pub | xclip -sel clip  # Linux con xclip
-     ```
-   * **Windows (Git Bash)**:
-
-     ```bash
-     cat ~/.ssh/id_ed25519.pub | clip
-     ```
-
-5. **Agrega la llave a tu servicio Git**
-
-   * **GitHub**: Configuración → SSH and GPG keys → New SSH key → pega → Guardar.
-   * **GitLab**: Configuración de usuario → SSH Keys → Add key → pega → Add key.
-   * **Bitbucket**: Configuración personal → SSH Keys → Add key → pega → Add key.
-
-6. **Prueba la conexión**
-
-   ```bash
-   ssh -T git@github.com
-   ```
-
-   Deberías ver:
-
-   > “Hi username! You’ve successfully authenticated…”
-
-7. **Inicia tu repositorio y conéctalo**
-
-   ```bash
-   mkdir mi-proyecto && cd mi-proyecto
-   git init
-   git remote add origin git@github.com:usuario/mi-proyecto.git
-   git add .
-   git commit -m "Initial commit"
-   git push -u origin main
-   ```
-
-   ¡Listo! Tu repo corriendo con SSH—sin contraseñas, solo la magia de las llaves.
+* If you see `id_rsa.pub` or `id_ed25519.pub`, you already have a key pair.
+* Optionally back them up before regenerating.
 
 ---
 
-💡 **Tip / Consejo**: Si cambias de clave o de máquina, repite solo los pasos 2–5 para mantener la puerta siempre abierta.
+## 3. Generate a New SSH Key
+
+Use the modern Ed25519 algorithm:
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+
+* **File location:** press **Enter** to accept `~/.ssh/id_ed25519`.
+* **Passphrase:** highly recommended—type one (you’ll unlock it with your fingerprint or agent).
+
+---
+
+## 4. Start the SSH Agent & Add Your Key
+
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+```
+
+> Your agent now holds your unlocked key so you don’t type your passphrase on every Git push.
+
+---
+
+## 5. Copy Your Public Key to Clipboard
+
+* **macOS:**
+
+  ```bash
+  pbcopy < ~/.ssh/id_ed25519.pub
+  ```
+* **Linux (with xclip):**
+
+  ```bash
+  xclip -sel clip < ~/.ssh/id_ed25519.pub
+  ```
+* **Windows (Git Bash):**
+
+  ```bash
+  clip < ~/.ssh/id_ed25519.pub
+  ```
+
+---
+
+## 6. Add Your SSH Key to GitHub (or Other Host)
+
+1. **GitHub:** Settings → **SSH and GPG keys** → **New SSH key** → paste → **Save**.
+2. **GitLab:** User Settings → **SSH Keys** → **Add key** → paste → **Add key**.
+3. **Bitbucket:** Personal Settings → **SSH Keys** → **Add key** → paste → **Add key**.
+
+---
+
+## 7. Handle SAML-SSO Enforcement (If Applicable)
+
+Your organization enforces SAML SSO, so you must authorize your SSH key:
+
+1. On GitHub, go to **Settings → SSH and GPG keys**.
+2. Click your key (e.g. **id\_ed25519**).
+3. Under **“Authorization for SET-Apps”**, click **Authorize**.
+
+---
+
+## 8. Test Your SSH Connection
+
+```bash
+ssh -T git@github.com
+```
+
+You should see:
+
+> “Hi `username`! You’ve successfully authenticated…”
+
+---
+
+## 9. (Alternative) Clone over HTTPS with a SAML-Authorized PAT
+
+1. Generate a Personal Access Token (repo scope) under **Developer settings → Personal access tokens**, and authorize it for your org.
+2. Clone using HTTPS, entering your PAT as the password:
+
+   ```bash
+   git clone https://github.com/SET-Apps/vsc-process-testing..git vsc-process-testing
+   ```
+
+---
+
+## 10. Initialize & Push a New Repo
+
+```bash
+mkdir my-project
+cd my-project
+git init
+git remote add origin git@github.com:username/my-project.git
+git add .
+git commit -m "Initial commit"
+git push -u origin main
+```
+
+No passwords—just pure SSH key magic! 🗝️
